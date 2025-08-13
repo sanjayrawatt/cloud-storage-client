@@ -57,7 +57,7 @@ const RegisterPage = () => {
         The h-auto and my-8 classes are used here to better accommodate the 
         extra fields of the registration form, preventing overflow.
       */}
-      <div className="flex w-full max-w-4xl h-[600px] shadow-2xl rounded-2xl overflow-hidden">
+      <div className="flex w-full max-w-4xl h-[750px] shadow-2xl rounded-2xl overflow-hidden">
         <div className="hidden md:flex w-1/2 p-0">
           <div
             className="w-full h-full flex flex-col justify-center p-12 text-white border-[5px] border-white rounded-tl-2xl rounded-bl-2xl"
