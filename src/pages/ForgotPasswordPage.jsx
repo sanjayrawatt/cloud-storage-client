@@ -11,7 +11,7 @@ const ForgotPasswordPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/api/auth/forgot-password', { email });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email });
             setMessage(response.data.message);
         } catch (error) {
             setMessage('An error occurred. Please try again.');
