@@ -38,8 +38,7 @@ const LoginPage = () => {
         type={toastInfo.type}
         onDismiss={() => setToastInfo({ ...toastInfo, show: false })}
       />
-      <div className="flex w-full max-w-7xl h-[750px] shadow-2xl rounded-2xl overflow-hidden">
-        {/* Left Panel - The key changes are here */}
+      <div className="flex w-full max-w-4xl h-[600px] shadow-2xl rounded-2xl overflow-hidden">
         <div className="hidden md:flex w-1/2 p-0">
           <div
             className="w-full h-full flex flex-col justify-center p-12 text-white border-[5px] border-white rounded-tl-2xl rounded-bl-2xl"

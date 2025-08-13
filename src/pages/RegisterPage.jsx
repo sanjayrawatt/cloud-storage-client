@@ -58,7 +58,6 @@ const RegisterPage = () => {
         extra fields of the registration form, preventing overflow.
       */}
       <div className="flex w-full max-w-7xl h-[850px] shadow-2xl rounded-2xl overflow-hidden">
-        {/* Left Panel - Identical styling to the login page */}
         <div className="hidden md:flex w-1/2 p-0">
           <div
             className="w-full h-full flex flex-col justify-center p-12 text-white border-[5px] border-white rounded-tl-2xl rounded-bl-2xl"
