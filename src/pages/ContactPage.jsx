@@ -18,7 +18,7 @@ const ContactPage = () => {
         setStatus({ loading: true, success: null, error: null });
 
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, { formData });
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, formData);
             setStatus({ loading: false, success: 'Thank you! Your message has been sent.', error: null });
             // Clear the form on success
             setFormData({ name: '', email: '', message: '' });
