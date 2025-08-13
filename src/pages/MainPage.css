@@ -1,0 +1,354 @@
+/* src/pages/MainPage.css */
+
+.main-page-container {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    color: white; /* Default text color is now white */
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh;
+    /* Removed the conflicting 'background-color: #050505;' */
+}
+
+.main-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 2rem;
+}
+
+/* --- Fixed Header --- */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    z-index: 100;
+    background: rgba(10, 10, 10, 0.3);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.main-header nav {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem; /* Increased from 1rem for more space */
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 1.05rem; /* Increased font size */
+    font-weight: 500; /* Added for a slightly bolder look */
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.nav-button {
+    background: linear-gradient(90deg, #ff3a82, #5233ff);
+    color: white;
+    font-weight: 600;
+    font-size: 1.05rem; /* Increased font size to match nav-link */
+    padding: 0.6rem 1.4rem; /* Slightly increased padding for a bigger button */
+    border-radius: 50px;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.nav-button:hover {
+    transform: scale(1.05);
+}
+
+
+/* --- Hero Section (First View) --- */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, #fff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    max-width: 700px;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+}
+
+.btn {
+    background: linear-gradient(90deg, #ff3a82, #5233ff);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px rgba(255, 58, 130, 0.3);
+    text-decoration: none;
+}
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(255, 58, 130, 0.5);
+}
+
+
+/* --- General Section Title --- */
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #ffffff; /* Make text clearly white */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* --- How It Works Section --- */
+.how-it-works-section, .testimonial-section {
+    padding: 6rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.steps-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.step-card {
+    flex: 1;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #ff3a82, #5233ff);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 1.5rem auto;
+}
+
+.step-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.step-card p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.step-connector {
+    flex: 0.5;
+    height: 2px;
+    background: linear-gradient(to right, #ff3a82, #5233ff);
+    opacity: 0.3;
+}
+
+/* --- Testimonial Section --- */
+.testimonials-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.testimonial-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    padding: 2rem;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.quote {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+}
+
+.author {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+}
+.author h4 {
+    font-weight: 600;
+    color: white;
+}
+.author span {
+    font-size: 0.9rem;
+    color: #ff3a82;
+}
+
+/* --- Final CTA Section --- */
+.cta-section {
+    padding: 6rem 2rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-section h2 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.cta-section p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+}
+
+.cta-btn {
+    transform: scale(1.1);
+}
+.cta-btn:hover {
+    transform: scale(1.15) translateY(-3px);
+}
+
+/* --- Footer --- */
+.main-footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 10, 0.3);
+}
+
+/* --- The Animated Background You Liked --- */
+.gradient-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+.gradient-sphere { position: absolute; border-radius: 50%; filter: blur(80px); transition: transform 0.5s ease-out; }
+.sphere-1 { width: 40vw; height: 40vw; background: linear-gradient(40deg, rgba(255, 0, 128, 0.6), rgba(255, 102, 0, 0.3)); top: -10%; left: -10%; animation: float-1 15s ease-in-out infinite alternate; }
+.sphere-2 { width: 45vw; height: 45vw; background: linear-gradient(240deg, rgba(72, 0, 255, 0.7), rgba(0, 183, 255, 0.3)); bottom: -20%; right: -10%; animation: float-2 18s ease-in-out infinite alternate; }
+.sphere-3 { width: 30vw; height: 30vw; background: linear-gradient(120deg, rgba(133, 89, 255, 0.4), rgba(98, 216, 249, 0.2)); top: 60%; left: 20%; animation: float-3 20s ease-in-out infinite alternate; }
+.noise-overlay, .grid-overlay, .glow, .particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;}
+.particle { position: absolute; background: white; border-radius: 50%; opacity: 0; }
+@keyframes float-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 10%) scale(1.1); } }
+@keyframes float-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-10%, -5%) scale(1.15); } }
+@keyframes float-3 { 0% { transform: translate(0, 0) scale(1); opacity: 0.3; } 100% { transform: translate(-5%, 10%) scale(1.05); opacity: 0.6; } }
+@keyframes pulse { 0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); } }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .steps-container, .testimonials-container { flex-direction: column; }
+    .step-connector { width: 2px; height: 50px; }
+    .section-title { font-size: 2rem; }
+    .hero-title { font-size: 3rem; }
+}
+
+
+/* ADD THESE STYLES to the end of MainPage.css */
+
+.content-section {
+    padding: 120px 2rem 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.section-subtitle {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.content-text {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+.text-center { text-align: center; }
+
+.nav-link.active {
+    color: white;
+    font-weight: 600;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-group input,
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: white;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff3a82;
+}
+
+.form-btn {
+    align-self: flex-start;
+}
+

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* This path works because your image is in the /public folder */
+  background-image: url('/bg1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* This is the key property that makes the background stay in place */
+  background-attachment: fixed;
+}
