@@ -27,7 +27,7 @@ const ResetPasswordPage = () => {
         }
 
         try {
-            const response = await axios.patch(`http://localhost:3001/api/auth/reset-password/${token}`, { password });
+            const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`, { password });
             setMessage(response.data.message || 'Password has been reset successfully! Redirecting to login...');
             setTimeout(() => {
                 navigate('/login');
