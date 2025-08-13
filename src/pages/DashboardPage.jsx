@@ -1,3 +1,5 @@
+// src/pages/DashboardPage.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -20,13 +22,11 @@ function wordArrayToUint8Array(wordArray) {
 }
 
 const DashboardPage = () => {
-  // --- NEW STATE FOR MASTER KEY WORKFLOW ---
+  // --- STATE ---
   const [isLoading, setIsLoading] = useState(true);
   const [hasEncryptionKey, setHasEncryptionKey] = useState(false);
   const [sessionEncryptionKey, setSessionEncryptionKey] = useState(null);
   const [encryptionKeyFields, setEncryptionKeyFields] = useState({ key: '', oldKey: '', newKey: '' });
-
-  // --- EXISTING STATE ---
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState('');
@@ -40,14 +40,15 @@ const DashboardPage = () => {
 
   const token = localStorage.getItem('token');
   const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
+  const API_URL = import.meta.env.VITE_API_URL; // Define API URL once
 
   const fetchData = useCallback(async () => {
     if (!token) { navigate('/login'); return; }
     setIsLoading(true);
     try {
       const [filesRes, keyStatusRes] = await Promise.all([
-        axios.get('http://localhost:3001/api/files', authHeaders),
-        axios.get('http://localhost:3001/api/encryption/status', authHeaders)
+        axios.get(`${API_URL}/api/files`, authHeaders),
+        axios.get(`${API_URL}/api/encryption/status`, authHeaders)
       ]);
       setFiles(filesRes.data.data);
       setHasEncryptionKey(keyStatusRes.data.hasKey);
@@ -57,7 +58,7 @@ const DashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, token]);
+  }, [navigate, token, API_URL]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -67,13 +68,13 @@ const DashboardPage = () => {
     setPasswordFields({ currentPassword: '', newPassword: '', confirmPassword: '' });
   };
 
-  // --- NEW MASTER KEY HANDLERS ---
+  // --- MASTER KEY HANDLERS ---
   const handleSetKey = async (e) => {
     e.preventDefault();
     const { key } = encryptionKeyFields;
     if (key.length < 6) { setToastInfo({ show: true, message: 'Key must be at least 6 characters.', type: 'error' }); return; }
     try {
-      const res = await axios.post('http://localhost:3001/api/encryption/set-key', { key }, authHeaders);
+      const res = await axios.post(`${API_URL}/api/encryption/set-key`, { key }, authHeaders);
       setToastInfo({ show: true, message: res.data.message, type: 'success' });
       setHasEncryptionKey(true);
       setSessionEncryptionKey(key);
@@ -88,7 +89,7 @@ const DashboardPage = () => {
     const { oldKey, newKey } = encryptionKeyFields;
     if (newKey.length < 6) { setToastInfo({ show: true, message: 'New key must be at least 6 characters.', type: 'error' }); return; }
     try {
-      const res = await axios.post('http://localhost:3001/api/encryption/change-key', { oldKey, newKey }, authHeaders);
+      const res = await axios.post(`${API_URL}/api/encryption/change-key`, { oldKey, newKey }, authHeaders);
       setToastInfo({ show: true, message: res.data.message, type: 'success' });
       setSessionEncryptionKey(newKey);
       closeModal();
@@ -101,7 +102,7 @@ const DashboardPage = () => {
     e.preventDefault();
     const { key } = encryptionKeyFields;
     try {
-      await axios.post('http://localhost:3001/api/encryption/verify-key', { key }, authHeaders);
+      await axios.post(`${API_URL}/api/encryption/verify-key`, { key }, authHeaders);
       setSessionEncryptionKey(key);
       closeModal();
       onVerifiedCallback(key);
@@ -114,7 +115,7 @@ const DashboardPage = () => {
     e.preventDefault();
     const accountPassword = e.target.elements.accountPassword.value;
     try {
-      const res = await axios.post('http://localhost:3001/api/encryption/reset-account', { accountPassword }, authHeaders);
+      const res = await axios.post(`${API_URL}/api/encryption/reset-account`, { accountPassword }, authHeaders);
       setToastInfo({ show: true, message: res.data.message, type: 'success' });
       closeModal();
       fetchData();
@@ -123,7 +124,7 @@ const DashboardPage = () => {
     }
   };
 
-  // --- UPDATED FILE HANDLERS to use Master Key ---
+  // --- FILE HANDLERS ---
   const handleFileUpload = (event) => {
     event.preventDefault();
     if (!selectedFile) return;
@@ -137,7 +138,7 @@ const DashboardPage = () => {
         const formData = new FormData();
         formData.append('file', encryptedFile, selectedFile.name);
         try {
-          await axios.post('http://localhost:3001/api/files/upload', formData, { ...authHeaders, 'Content-Type': 'multipart/form-data', onUploadProgress: (p) => setUploadProgress(Math.round((p.loaded * 100) / p.total)) });
+          await axios.post(`${API_URL}/api/files/upload`, formData, { ...authHeaders, 'Content-Type': 'multipart/form-data', onUploadProgress: (p) => setUploadProgress(Math.round((p.loaded * 100) / p.total)) });
           setToastInfo({ show: true, message: 'File uploaded successfully!', type: 'success' });
           fetchData();
         } catch (error) {
@@ -157,7 +158,7 @@ const DashboardPage = () => {
   const handleFileDownload = (fileId, fileName) => {
     const performDownload = async (key) => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/files/${fileId}/download`, authHeaders);
+        const res = await axios.get(`${API_URL}/api/files/${fileId}/download`, authHeaders);
         const response = await axios.get(res.data.url, { responseType: 'text' });
         const decryptedBytes = CryptoJS.AES.decrypt(response.data, key);
         if (!decryptedBytes || decryptedBytes.sigBytes <= 0) throw new Error("Decryption failed. The key may be incorrect.");
@@ -172,14 +173,10 @@ const DashboardPage = () => {
     setModalState({ isOpen: true, type: 'enterKey', props: { onConfirm: performDownload, title: "Enter Master Key to Download" } });
   };
 
-  const handleFileDelete = (fileId, fileName) => {
-    setModalState({ isOpen: true, type: 'confirmDelete', props: { fileName, onConfirm: () => handleDeleteConfirm(fileId, fileName) } });
-  };
-
   const handleDeleteConfirm = async (fileId, fileName) => {
     closeModal();
     try {
-      await axios.delete(`http://localhost:3001/api/files/${fileId}`, authHeaders);
+      await axios.delete(`${API_URL}/api/files/${fileId}`, authHeaders);
       setToastInfo({ show: true, message: `File "${fileName}" deleted successfully.`, type: 'success' });
       fetchData();
     } catch (error) {
@@ -187,27 +184,20 @@ const DashboardPage = () => {
     }
   };
 
-  // --- EXISTING UNCHANGED HANDLERS ---
-  const handleOpenChangePasswordModal = () => setModalState({ isOpen: true, type: 'changePassword' });
   const handleChangePasswordSubmit = async (event) => {
     event.preventDefault();
     const { currentPassword, newPassword, confirmPassword } = passwordFields;
     if (newPassword !== confirmPassword) { setToastInfo({ show: true, message: "New passwords do not match.", type: 'error' }); return; }
     if (!newPassword || newPassword.length < 6) { setToastInfo({ show: true, message: "Password must be at least 6 characters.", type: 'error' }); return; }
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/change-password', { currentPassword, newPassword }, authHeaders);
+      const response = await axios.post(`${API_URL}/api/auth/change-password`, { currentPassword, newPassword }, authHeaders);
       setToastInfo({ show: true, message: response.data.message, type: 'success' });
       closeModal();
     } catch (error) {
       setToastInfo({ show: true, message: error.response?.data?.message || 'Failed to change password.', type: 'error' });
     }
   };
-  const handleRenameClick = (file) => {
-    setEditingFileId(file._id);
-    const nameParts = file.fileName.split('.');
-    if (nameParts.length > 1) { nameParts.pop(); }
-    setNewFileName(nameParts.join('.'));
-  };
+
   const handleRenameSubmit = async (e, originalFile) => {
     e.preventDefault();
     const nameParts = originalFile.fileName.split('.');
@@ -216,7 +206,7 @@ const DashboardPage = () => {
     if (!newBaseName.trim()) { setToastInfo({ show: true, message: 'File name cannot be empty.', type: 'error' }); setEditingFileId(null); return; }
     const finalNewName = newBaseName.trim() + extension;
     try {
-      await axios.put(`http://localhost:3001/api/files/${originalFile._id}/rename`, { newName: finalNewName }, authHeaders);
+      await axios.put(`${API_URL}/api/files/${originalFile._id}/rename`, { newName: finalNewName }, authHeaders);
       setToastInfo({ show: true, message: 'File renamed successfully!', type: 'success' });
       setEditingFileId(null);
       fetchData();
@@ -225,11 +215,20 @@ const DashboardPage = () => {
       setEditingFileId(null);
     }
   };
+
+  // --- UNCHANGED HELPER HANDLERS ---
+  const handleFileDelete = (fileId, fileName) => setModalState({ isOpen: true, type: 'confirmDelete', props: { fileName, onConfirm: () => handleDeleteConfirm(fileId, fileName) } });
+  const handleOpenChangePasswordModal = () => setModalState({ isOpen: true, type: 'changePassword' });
+  const handleRenameClick = (file) => {
+    setEditingFileId(file._id);
+    const nameParts = file.fileName.split('.');
+    if (nameParts.length > 1) { nameParts.pop(); }
+    setNewFileName(nameParts.join('.'));
+  };
   const performLogout = () => { localStorage.removeItem('token'); navigate('/login'); };
   const handleLogoutClick = () => setModalState({ isOpen: true, type: 'confirmLogout', props: { onConfirm: performLogout } });
 
-
-  // --- RENDER LOGIC ---
+  // --- RENDER LOGIC (NO CHANGES NEEDED HERE) ---
   if (isLoading) { return <div className="dashboard-container flex items-center justify-center text-white">Loading Your Secure Vault...</div>; }
 
   if (!hasEncryptionKey) {
@@ -273,17 +272,11 @@ const DashboardPage = () => {
 
       <Modal isOpen={modalState.isOpen} onClose={closeModal} modalClassName="modal-glass">
         <button onClick={closeModal} className="modal-close-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
-        
         {modalState.type === 'enterKey' && (<form onSubmit={(e) => handleVerifyKeyAndProceed(e, modalState.props.onConfirm)}><h3 className="panel-title mb-4">{modalState.props.title || 'Master Key Required'}</h3><p className="text-sm text-gray-400 mb-4">Please enter your master encryption key to proceed.</p><input name="key" type="password" value={encryptionKeyFields.key} onChange={(e) => setEncryptionKeyFields({ ...encryptionKeyFields, key: e.target.value })} className="w-full px-3 py-2 rounded-md mb-4" autoFocus required /><div className="flex justify-between items-center mt-4"><button type="button" onClick={() => setModalState({ isOpen: true, type: 'confirmReset' })} className="font-medium text-red-400 hover:underline text-sm">Forgot key? Reset account.</button><div className="flex space-x-4"><button type="button" onClick={closeModal} className="nav-btn">Cancel</button><button type="submit" className="btn-gradient">Confirm</button></div></div></form>)}
-        
         {modalState.type === 'changeKey' && (<form onSubmit={handleChangeEncryptionKey}><h3 className="panel-title mb-4">Change Master Encryption Key</h3><div className="space-y-4"><input type="password" placeholder="Old Encryption Key" value={encryptionKeyFields.oldKey} onChange={(e) => setEncryptionKeyFields({ ...encryptionKeyFields, oldKey: e.target.value })} className="w-full px-3 py-2 rounded-md" required autoFocus /><input type="password" placeholder="New Encryption Key (min. 6 chars)" value={encryptionKeyFields.newKey} onChange={(e) => setEncryptionKeyFields({ ...encryptionKeyFields, newKey: e.target.value })} className="w-full px-3 py-2 rounded-md" required /></div><div className="flex justify-end space-x-4 mt-6"><button type="button" onClick={closeModal} className="nav-btn">Cancel</button><button type="submit" className="btn-gradient">Update Key</button></div></form>)}
-        
         {modalState.type === 'confirmReset' && (<form onSubmit={handleAccountResetSubmit}><h3 className="panel-title text-red-500 mb-4">Account Reset Confirmation</h3><p className="text-gray-300 mb-2">This is your final warning. If you proceed:</p><ul className="list-disc list-inside mb-4 text-red-400"><li>All of your encrypted files will be permanently deleted.</li><li>This action cannot be undone.</li></ul><p className="text-gray-400 mb-4">To confirm, please enter your main <strong>account password</strong> (the one you use to log in).</p><input name="accountPassword" type="password" className="w-full px-3 py-2 rounded-md mb-4" required autoFocus /><div className="flex justify-end space-x-4"><button type="button" onClick={closeModal} className="nav-btn">Cancel</button><button type="submit" className="btn-action btn-delete">Delete All Files & Reset</button></div></form>)}
-
         {modalState.type === 'changePassword' && (<form onSubmit={handleChangePasswordSubmit}><h3 className="panel-title mb-4">Change Account Password</h3><div className="space-y-4"><input type="password" placeholder="Current Account Password" value={passwordFields.currentPassword} onChange={(e) => setPasswordFields({ ...passwordFields, currentPassword: e.target.value })} className="w-full px-3 py-2 rounded-md" required autoFocus /><input type="password" placeholder="New Account Password" value={passwordFields.newPassword} onChange={(e) => setPasswordFields({ ...passwordFields, newPassword: e.target.value })} className="w-full px-3 py-2 rounded-md" required /><input type="password" placeholder="Confirm New Password" value={passwordFields.confirmPassword} onChange={(e) => setPasswordFields({ ...passwordFields, confirmPassword: e.target.value })} className="w-full px-3 py-2 rounded-md" required /></div><div className="flex justify-end space-x-4 mt-6"><button type="button" onClick={closeModal} className="nav-btn">Cancel</button><button type="submit" className="btn-gradient">Update Password</button></div></form>)}
-        
         {modalState.type === 'confirmLogout' && (<div><h3 className="panel-title mb-4">Confirm Logout</h3><p className="text-sm text-gray-400 mb-6">Are you sure you want to log out?</p><div className="flex justify-end space-x-4"><button onClick={closeModal} className="nav-btn">Cancel</button><button onClick={modalState.props.onConfirm} className="nav-btn nav-btn-logout">Logout</button></div></div>)}
-        
         {modalState.type === 'confirmDelete' && (<div><h3 className="panel-title mb-4">Confirm Deletion</h3><p className="text-sm text-gray-400 mb-4">Are you sure you want to permanently delete "{modalState.props.fileName}"?</p><div className="flex justify-end space-x-4"><button onClick={closeModal} className="nav-btn">Cancel</button><button onClick={modalState.props.onConfirm} className="btn-action btn-delete">Delete</button></div></div>)}
       </Modal>
     </div>

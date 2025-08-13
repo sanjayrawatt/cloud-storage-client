@@ -26,14 +26,12 @@ const RegisterPage = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:3001/api/auth/register", {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         name,
         email,
         password,
       });
       navigate("/login");
-      // In RegisterPage.jsx's handleSubmit function
-      // ...
     } catch (error) {
       let errorMessage =
         error.response?.data?.message ||
