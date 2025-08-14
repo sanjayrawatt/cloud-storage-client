@@ -2,7 +2,7 @@
 
 A full-stack MERN (MongoDB, Express, React, Node.js) application that allows users to upload, download, and manage files with end-to-end encryption. All files are encrypted on the client-side before being uploaded, ensuring complete privacy.
 
-**[➡️ Live Demo](https://gentle-kitsune-2ba555.netlify.app/)**
+**[➡️ Live Demo](https://my-secure-cloud-storage.netlify.app/)**
 
 ---
 
