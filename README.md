@@ -1,12 +1,35 @@
-# React + Vite
+# CloudStore - Secure File Storage Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack MERN (MongoDB, Express, React, Node.js) application that allows users to upload, download, and manage files with end-to-end encryption. All files are encrypted on the client-side before being uploaded, ensuring complete privacy.
 
-Currently, two official plugins are available:
+**[➡️ Live Demo](https://gentle-kitsune-2ba555.netlify.app/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+### Key Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   **User Authentication**: Secure user registration and login (JWT).
+-   **End-to-End Encryption**: Files are encrypted in the browser using CryptoJS (AES) before upload.
+-   **Secure File Management**: Upload, download, rename, and delete encrypted files.
+-   **Master Encryption Key**: Users set a master key that is never stored on the server, ensuring only they can decrypt their files.
+-   **Cloud Storage**: Integrated with a cloud provider for scalable file storage.
+-   **Responsive Design**: A modern and clean user interface built with React and Tailwind CSS.
+
+### Tech Stack
+
+-   **Frontend**: React, React Router, Axios, Tailwind CSS
+-   **Backend**: Node.js, Express.js
+-   **Database**: MongoDB (with Mongoose)
+-   **Authentication**: JSON Web Tokens (JWT), bcrypt
+-   **Encryption**: CryptoJS (AES)
+-   **Deployment**:
+    -   Frontend deployed on **Netlify**.
+    -   Backend deployed on **Render**.
+
+### View Backend Repository
+
+The backend code for the API and server logic can be found here:
+
+**➡️ [Backend GitHub Repository](https://github.com/sanjayrawatt/cloud-storage-system)**  
+
+---
